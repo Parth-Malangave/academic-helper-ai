@@ -1,11 +1,94 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { ChatSidebar } from '@/components/chat/ChatSidebar';
+import { TopBar } from '@/components/chat/TopBar';
+import { ChatArea } from '@/components/chat/ChatArea';
+import { InputBar } from '@/components/chat/InputBar';
+import { CommunityPage } from '@/pages/CommunityPage';
+import { toast } from '@/hooks/use-toast';
+
+type Tab = 'group-chat' | 'community' | 'share-chat';
+type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
 
 const Index = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState<Tab>('group-chat');
+  const [activeMode, setActiveMode] = useState<Mode>('descriptive');
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const handleNewChat = () => {
+    setSelectedChatId(null);
+    toast({
+      title: "New Chat",
+      description: "Started a new conversation",
+    });
+  };
+
+  const handleSendMessage = (message: string) => {
+    if (!selectedChatId) {
+      setSelectedChatId('new');
+    }
+    toast({
+      title: "Message sent",
+      description: "Your doubt has been submitted (UI only)",
+    });
+  };
+
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+  };
+
+  const handleToggleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    toast({
+      title: isBookmarked ? "Bookmark removed" : "Bookmarked",
+      description: isBookmarked 
+        ? "Removed from bookmarked doubts" 
+        : "Added to bookmarked doubts",
+    });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="h-screen flex flex-col bg-background">
+      <TopBar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        activeMode={activeMode}
+        onModeChange={setActiveMode}
+        isBookmarked={isBookmarked}
+        onToggleBookmark={handleToggleBookmark}
+        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
+
+      <div className="flex-1 flex overflow-hidden">
+        {activeTab !== 'community' && (
+          <ChatSidebar
+            isOpen={sidebarOpen}
+            selectedChatId={selectedChatId}
+            onSelectChat={setSelectedChatId}
+            onNewChat={handleNewChat}
+          />
+        )}
+
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {activeTab === 'community' ? (
+            <CommunityPage />
+          ) : activeTab === 'share-chat' ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center p-8">
+                <h2 className="text-xl font-semibold text-foreground mb-2">Share Chat</h2>
+                <p className="text-muted-foreground">
+                  Share your learning conversations with others.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <ChatArea chatId={selectedChatId} />
+              <InputBar onSendMessage={handleSendMessage} />
+            </>
+          )}
+        </main>
       </div>
     </div>
   );
