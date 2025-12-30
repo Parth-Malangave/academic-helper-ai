@@ -27,7 +27,7 @@ export function InputBar({ onSendMessage }: InputBarProps) {
   return (
     <div className="border-t border-border bg-background p-4">
       <div className="max-w-3xl mx-auto">
-        <div className="relative flex items-end gap-2 bg-muted rounded-2xl px-4 py-3">
+        <div className="relative flex items-center gap-2 bg-muted rounded-2xl px-4 py-3">
           <Button
             variant="ghost"
             size="icon"
@@ -41,7 +41,7 @@ export function InputBar({ onSendMessage }: InputBarProps) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask your academic doubt..."
-            className="flex-1 min-h-[40px] max-h-32 resize-none border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground"
+            className="flex-1 min-h-[40px] max-h-32 resize-none border-0 bg-transparent p-0 py-2 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeholder:text-muted-foreground"
             rows={1}
           />
 
