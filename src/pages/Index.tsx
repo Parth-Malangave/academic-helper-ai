@@ -6,12 +6,12 @@ import { InputBar } from '@/components/chat/InputBar';
 import { CommunityPage } from '@/pages/CommunityPage';
 import { toast } from '@/hooks/use-toast';
 
-type Tab = 'group-chat' | 'community' | 'share-chat';
+type Tab = 'community';
 type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>('group-chat');
+  const [activeTab, setActiveTab] = useState<Tab | null>(null);
   const [activeMode, setActiveMode] = useState<Mode>('descriptive');
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -73,15 +73,6 @@ const Index = () => {
         <main className="flex-1 flex flex-col overflow-hidden">
           {activeTab === 'community' ? (
             <CommunityPage />
-          ) : activeTab === 'share-chat' ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center p-8">
-                <h2 className="text-xl font-semibold text-foreground mb-2">Share Chat</h2>
-                <p className="text-muted-foreground">
-                  Share your learning conversations with others.
-                </p>
-              </div>
-            </div>
           ) : (
             <>
               <ChatArea chatId={selectedChatId} />

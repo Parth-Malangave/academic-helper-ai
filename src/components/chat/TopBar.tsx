@@ -1,10 +1,10 @@
-import { Moon, Sun, Bookmark, BookmarkCheck, Menu, Users, Globe, Share2 } from 'lucide-react';
+import { Moon, Sun, Bookmark, BookmarkCheck, Menu, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
-type Tab = 'group-chat' | 'community' | 'share-chat';
+type Tab = 'community';
 type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
 
 interface TopBarProps {
@@ -19,7 +19,6 @@ interface TopBarProps {
 
 const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'community', label: 'Community', icon: <Globe className="h-4 w-4" /> },
-  { id: 'share-chat', label: 'Share Chat', icon: <Share2 className="h-4 w-4" /> },
 ];
 
 const modes: { id: Mode; label: string }[] = [
