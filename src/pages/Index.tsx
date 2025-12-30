@@ -11,7 +11,7 @@ type Tab = 'community' | 'bookmarks';
 type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
 
 const Index = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab | null>(null);
   const [activeMode, setActiveMode] = useState<Mode>('descriptive');
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -76,19 +76,18 @@ const Index = () => {
         onBackToHome={handleBackToHome}
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        {activeTab !== 'community' && activeTab !== 'bookmarks' && (
-          <ChatSidebar
-            isOpen={sidebarOpen}
-            selectedChatId={selectedChatId}
-            onSelectChat={setSelectedChatId}
-            onNewChat={handleNewChat}
-            onOpenBookmarks={handleOpenBookmarks}
-            bookmarkedChats={bookmarkedChats}
-            onToggleBookmark={handleToggleChatBookmark}
-          />
-        )}
+      <ChatSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        selectedChatId={selectedChatId}
+        onSelectChat={setSelectedChatId}
+        onNewChat={handleNewChat}
+        onOpenBookmarks={handleOpenBookmarks}
+        bookmarkedChats={bookmarkedChats}
+        onToggleBookmark={handleToggleChatBookmark}
+      />
 
+      <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 flex flex-col overflow-hidden">
           {activeTab === 'community' ? (
             <CommunityPage />
