@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockCommunityDoubts, mockAnswers, Answer } from '@/data/mockData';
 import { ArrowLeft, ThumbsUp, ThumbsDown, Image, Send, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface AnswerPageProps {
   doubtId: string;
@@ -18,6 +19,7 @@ export function AnswerPage({ doubtId, onBack }: AnswerPageProps) {
   const doubt = mockCommunityDoubts.find((d) => d.id === doubtId);
   const [answers, setAnswers] = useState<Answer[]>(mockAnswers);
   const [newAnswer, setNewAnswer] = useState('');
+  const [userVotes, setUserVotes] = useState<Record<string, 'up' | 'down' | null>>({});
 
   if (!doubt) {
     return (
@@ -43,13 +45,24 @@ export function AnswerPage({ doubtId, onBack }: AnswerPageProps) {
   };
 
   const handleVote = (answerId: string, type: 'up' | 'down') => {
+    const currentVote = userVotes[answerId];
+    
+    // If user already voted the same way, do nothing
+    if (currentVote === type) return;
+    
+    setUserVotes(prev => ({ ...prev, [answerId]: type }));
+    
     setAnswers(
       answers.map((a) =>
         a.id === answerId
           ? {
               ...a,
-              upvotes: type === 'up' ? a.upvotes + 1 : a.upvotes,
-              downvotes: type === 'down' ? a.downvotes + 1 : a.downvotes,
+              upvotes: type === 'up' 
+                ? a.upvotes + 1 
+                : (currentVote === 'up' ? a.upvotes - 1 : a.upvotes),
+              downvotes: type === 'down' 
+                ? a.downvotes + 1 
+                : (currentVote === 'down' ? a.downvotes - 1 : a.downvotes),
             }
           : a
       )
@@ -115,18 +128,36 @@ export function AnswerPage({ doubtId, onBack }: AnswerPageProps) {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleVote(answer.id, 'up')}
-                    className="gap-1 h-8 text-muted-foreground hover:text-foreground"
+                    className={cn(
+                      "gap-1 h-8 transition-all duration-200",
+                      userVotes[answer.id] === 'up' 
+                        ? "text-primary scale-110" 
+                        : "text-muted-foreground hover:text-foreground",
+                      userVotes[answer.id] === 'up' && "animate-scale-in"
+                    )}
                   >
-                    <ThumbsUp className="h-4 w-4" />
+                    <ThumbsUp className={cn(
+                      "h-4 w-4 transition-transform duration-200",
+                      userVotes[answer.id] === 'up' && "fill-primary"
+                    )} />
                     {answer.upvotes}
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleVote(answer.id, 'down')}
-                    className="gap-1 h-8 text-muted-foreground hover:text-foreground"
+                    className={cn(
+                      "gap-1 h-8 transition-all duration-200",
+                      userVotes[answer.id] === 'down' 
+                        ? "text-destructive scale-110" 
+                        : "text-muted-foreground hover:text-foreground",
+                      userVotes[answer.id] === 'down' && "animate-scale-in"
+                    )}
                   >
-                    <ThumbsDown className="h-4 w-4" />
+                    <ThumbsDown className={cn(
+                      "h-4 w-4 transition-transform duration-200",
+                      userVotes[answer.id] === 'down' && "fill-destructive"
+                    )} />
                     {answer.downvotes}
                   </Button>
                 </div>

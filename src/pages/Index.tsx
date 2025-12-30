@@ -56,6 +56,10 @@ const Index = () => {
     setActiveTab(null);
   };
 
+  const handleBackToHome = () => {
+    setActiveTab(null);
+  };
+
   const handleSelectChatFromBookmarks = (chatId: string) => {
     setSelectedChatId(chatId);
     setActiveTab(null);
@@ -69,6 +73,7 @@ const Index = () => {
         activeMode={activeMode}
         onModeChange={setActiveMode}
         onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        onBackToHome={handleBackToHome}
       />
 
       <div className="flex-1 flex overflow-hidden">
