@@ -1,8 +1,9 @@
-import { Plus, Search, Bookmark, MessageSquare } from 'lucide-react';
+import { Plus, Search, Bookmark, MessageSquare, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockChatHistory, ChatThread } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -93,9 +94,18 @@ interface ChatHistoryItemProps {
 }
 
 function ChatHistoryItem({ chat, isSelected, onClick }: ChatHistoryItemProps) {
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareLink = `${window.location.origin}/chat/${chat.id}`;
+    navigator.clipboard.writeText(shareLink);
+    toast({
+      title: "Link copied!",
+      description: "Chat link copied to clipboard",
+    });
+  };
+
   return (
-    <button
-      onClick={onClick}
+    <div
       className={cn(
         "w-full text-left p-2 rounded-md transition-colors group",
         isSelected 
@@ -103,13 +113,22 @@ function ChatHistoryItem({ chat, isSelected, onClick }: ChatHistoryItemProps) {
           : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
       )}
     >
-      <div className="flex items-start gap-2">
-        <MessageSquare className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium truncate">{chat.title}</p>
-          <p className="text-xs text-muted-foreground truncate">{chat.lastMessage}</p>
+      <button onClick={onClick} className="w-full text-left">
+        <div className="flex items-start gap-2">
+          <MessageSquare className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium truncate">{chat.title}</p>
+            <p className="text-xs text-muted-foreground truncate">{chat.lastMessage}</p>
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+      <button
+        onClick={handleShareClick}
+        className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Link2 className="h-3 w-3" />
+        Share Chat
+      </button>
+    </div>
   );
 }
