@@ -1,19 +1,17 @@
-import { Moon, Sun, Bookmark, BookmarkCheck, Menu, Globe } from 'lucide-react';
+import { Moon, Sun, Menu, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
-type Tab = 'community';
+type Tab = 'community' | 'bookmarks';
 type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
 
 interface TopBarProps {
-  activeTab: Tab;
+  activeTab: Tab | null;
   onTabChange: (tab: Tab) => void;
   activeMode: Mode;
   onModeChange: (mode: Mode) => void;
-  isBookmarked: boolean;
-  onToggleBookmark: () => void;
   onToggleSidebar: () => void;
 }
 
@@ -32,8 +30,6 @@ export function TopBar({
   onTabChange,
   activeMode,
   onModeChange,
-  isBookmarked,
-  onToggleBookmark,
   onToggleSidebar,
 }: TopBarProps) {
   const { theme, toggleTheme } = useTheme();
@@ -86,22 +82,6 @@ export function TopBar({
             </button>
           ))}
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggleBookmark}
-          className={cn(
-            "text-muted-foreground hover:text-foreground",
-            isBookmarked && "text-primary"
-          )}
-        >
-          {isBookmarked ? (
-            <BookmarkCheck className="h-5 w-5" />
-          ) : (
-            <Bookmark className="h-5 w-5" />
-          )}
-        </Button>
 
         <Button
           variant="ghost"
