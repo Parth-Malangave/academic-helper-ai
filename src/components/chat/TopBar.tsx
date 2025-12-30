@@ -18,7 +18,6 @@ interface TopBarProps {
 }
 
 const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: 'group-chat', label: 'Group Chat', icon: <Users className="h-4 w-4" /> },
   { id: 'community', label: 'Community', icon: <Globe className="h-4 w-4" /> },
   { id: 'share-chat', label: 'Share Chat', icon: <Share2 className="h-4 w-4" /> },
 ];
