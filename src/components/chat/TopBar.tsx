@@ -1,4 +1,4 @@
-import { Moon, Sun, Menu, Globe } from 'lucide-react';
+import { Moon, Sun, Menu, Globe, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -13,6 +13,7 @@ interface TopBarProps {
   activeMode: Mode;
   onModeChange: (mode: Mode) => void;
   onToggleSidebar: () => void;
+  onBackToHome: () => void;
 }
 
 const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -31,6 +32,7 @@ export function TopBar({
   activeMode,
   onModeChange,
   onToggleSidebar,
+  onBackToHome,
 }: TopBarProps) {
   const { theme, toggleTheme } = useTheme();
 
@@ -62,26 +64,38 @@ export function TopBar({
               <span className="hidden md:inline">{tab.label}</span>
             </button>
           ))}
+          
+          {activeTab === 'community' && (
+            <button
+              onClick={onBackToHome}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors text-muted-foreground hover:text-foreground"
+            >
+              <Home className="h-4 w-4" />
+              <span className="hidden md:inline">Back to Home</span>
+            </button>
+          )}
         </nav>
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden lg:flex items-center gap-1 bg-muted rounded-lg p-1">
-          {modes.map((mode) => (
-            <button
-              key={mode.id}
-              onClick={() => onModeChange(mode.id)}
-              className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap",
-                activeMode === mode.id
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {mode.label}
-            </button>
-          ))}
-        </div>
+        {activeTab !== 'community' && (
+          <div className="hidden lg:flex items-center gap-1 bg-muted rounded-lg p-1">
+            {modes.map((mode) => (
+              <button
+                key={mode.id}
+                onClick={() => onModeChange(mode.id)}
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap",
+                  activeMode === mode.id
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <Button
           variant="ghost"

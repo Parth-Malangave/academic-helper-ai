@@ -11,7 +11,7 @@ export function CommunityPage() {
     return (
       <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_3fr_1fr]">
         <div className="hidden lg:block border-r border-border">
-          <CommunityLeftColumn />
+          <CommunityLeftColumn onSelectDoubt={setSelectedDoubtId} />
         </div>
         <div className="h-full overflow-hidden">
           <AnswerPage
@@ -29,7 +29,7 @@ export function CommunityPage() {
   return (
     <div className="h-full grid grid-cols-1 lg:grid-cols-[1fr_3fr_1fr]">
       <div className="hidden lg:block border-r border-border">
-        <CommunityLeftColumn />
+        <CommunityLeftColumn onSelectDoubt={setSelectedDoubtId} />
       </div>
       <div className="h-full overflow-hidden">
         <CommunityCenterColumn onSelectDoubt={setSelectedDoubtId} />

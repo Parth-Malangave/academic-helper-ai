@@ -9,15 +9,16 @@ import { cn } from '@/lib/utils';
 interface AskDoubtFormProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmitDoubt: (topic: string, doubt: string) => void;
 }
 
-export function AskDoubtForm({ isOpen, onClose }: AskDoubtFormProps) {
+export function AskDoubtForm({ isOpen, onClose, onSubmitDoubt }: AskDoubtFormProps) {
   const [topic, setTopic] = useState('');
   const [doubt, setDoubt] = useState('');
 
   const handleSubmit = () => {
     if (topic.trim() && doubt.trim()) {
-      // UI only - would submit to backend
+      onSubmitDoubt(topic.trim(), doubt.trim());
       setTopic('');
       setDoubt('');
       onClose();
