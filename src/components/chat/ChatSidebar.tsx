@@ -1,12 +1,14 @@
 import { Plus, Search, Bookmark, BookmarkCheck, MessageSquare, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { mockChatHistory, ChatThread } from '@/data/mockData';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 
 interface ChatSidebarProps {
   isOpen: boolean;
+  onClose: () => void;
   selectedChatId: string | null;
   onSelectChat: (id: string) => void;
   onNewChat: () => void;
@@ -17,6 +19,7 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ 
   isOpen, 
+  onClose,
   selectedChatId, 
   onSelectChat, 
   onNewChat,
@@ -25,63 +28,49 @@ export function ChatSidebar({
   onToggleBookmark,
 }: ChatSidebarProps) {
   const personalChats = mockChatHistory.filter(chat => !chat.isGroup);
-  const groupChats = mockChatHistory.filter(chat => chat.isGroup);
 
-  if (!isOpen) return null;
+  const handleSelectChat = (id: string) => {
+    onSelectChat(id);
+    onClose();
+  };
 
   return (
-    <aside className="w-64 h-full bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-3 space-y-2">
-        <Button 
-          onClick={onNewChat}
-          className="w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          New Chat
-        </Button>
-        <Button 
-          variant="outline" 
-          className="w-full justify-start gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
-        >
-          <Search className="h-4 w-4" />
-          Search Chat
-        </Button>
-        <Button 
-          variant="outline" 
-          className="w-full justify-start gap-2 border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent"
-          onClick={onOpenBookmarks}
-        >
-          <Bookmark className="h-4 w-4" />
-          Bookmarked Doubts
-        </Button>
-      </div>
+    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <SheetContent side="left" className="w-72 p-0 flex flex-col">
+        <SheetHeader className="p-4 border-b border-border">
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
+        
+        <div className="p-3 space-y-2">
+          <Button 
+            onClick={() => { onNewChat(); onClose(); }}
+            className="w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" />
+            New Chat
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start gap-2 border-border text-foreground hover:bg-accent"
+          >
+            <Search className="h-4 w-4" />
+            Search Chat
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start gap-2 border-border text-foreground hover:bg-accent"
+            onClick={() => { onOpenBookmarks(); onClose(); }}
+          >
+            <Bookmark className="h-4 w-4" />
+            Bookmarked Chats
+          </Button>
+        </div>
 
-      <ScrollArea className="flex-1 px-3">
-        <div className="space-y-4 pb-4">
-          {groupChats.length > 0 && (
+        <ScrollArea className="flex-1 px-3">
+          <div className="space-y-4 pb-4">
             <div>
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
-                Group Chats
-              </h3>
-              <div className="space-y-1">
-                {groupChats.map((chat) => (
-                  <ChatHistoryItem
-                    key={chat.id}
-                    chat={chat}
-                    isSelected={selectedChatId === chat.id}
-                    onClick={() => onSelectChat(chat.id)}
-                    isBookmarked={bookmarkedChats.includes(chat.id)}
-                    onToggleBookmark={() => onToggleBookmark(chat.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {personalChats.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
-                Personal Chats
+                Previous Chat
               </h3>
               <div className="space-y-1">
                 {personalChats.map((chat) => (
@@ -89,17 +78,17 @@ export function ChatSidebar({
                     key={chat.id}
                     chat={chat}
                     isSelected={selectedChatId === chat.id}
-                    onClick={() => onSelectChat(chat.id)}
+                    onClick={() => handleSelectChat(chat.id)}
                     isBookmarked={bookmarkedChats.includes(chat.id)}
                     onToggleBookmark={() => onToggleBookmark(chat.id)}
                   />
                 ))}
               </div>
             </div>
-          )}
-        </div>
-      </ScrollArea>
-    </aside>
+          </div>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 }
 
