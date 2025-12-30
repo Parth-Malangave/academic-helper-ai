@@ -20,21 +20,6 @@ export function ChatArea({ chatId }: ChatAreaProps) {
         <p className="text-muted-foreground max-w-md">
           Your AI-powered academic companion. Ask any question about your studies and get detailed explanations instantly.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8 max-w-lg">
-          {[
-            'Explain quantum entanglement',
-            'Solve this calculus problem',
-            'What is DNA replication?',
-            'Help with organic chemistry'
-          ].map((prompt) => (
-            <button
-              key={prompt}
-              className="p-3 text-sm text-left rounded-lg border border-border hover:bg-muted transition-colors text-muted-foreground"
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
       </div>
     );
   }
