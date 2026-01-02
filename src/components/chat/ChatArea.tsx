@@ -1,16 +1,32 @@
+import { useState, useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChatMessage, mockMessages } from '@/data/mockData';
 import { cn } from '@/lib/utils';
-import { GraduationCap, User } from 'lucide-react';
+import { GraduationCap, User, Loader2 } from 'lucide-react';
+
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
 
 interface ChatAreaProps {
   chatId: string | null;
+  messages: Message[];
+  isLoading: boolean;
 }
 
-export function ChatArea({ chatId }: ChatAreaProps) {
-  const messages = chatId ? mockMessages : [];
+export function ChatArea({ chatId, messages, isLoading }: ChatAreaProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  if (!chatId) {
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading]);
+
+  if (!chatId && messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
@@ -30,17 +46,31 @@ export function ChatArea({ chatId }: ChatAreaProps) {
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
+        {isLoading && (
+          <div className="flex gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-muted">
+              <GraduationCap className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-card border border-border">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Thinking...</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={scrollRef} />
       </div>
     </ScrollArea>
   );
 }
 
 interface MessageBubbleProps {
-  message: ChatMessage;
+  message: Message;
 }
 
 function MessageBubble({ message }: MessageBubbleProps) {
-  const isUser = message.sender === 'user';
+  const isUser = message.role === 'user';
 
   return (
     <div className={cn("flex gap-3", isUser && "flex-row-reverse")}>
