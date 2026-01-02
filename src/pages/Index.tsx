@@ -5,7 +5,7 @@ import { ChatArea } from '@/components/chat/ChatArea';
 import { InputBar } from '@/components/chat/InputBar';
 import { CommunityPage } from '@/pages/CommunityPage';
 import { BookmarkedChatsPage } from '@/pages/BookmarkedChatsPage';
-import { toast } from '@/hooks/use-toast';
+import { useChat } from '@/hooks/useChat';
 
 type Tab = 'community' | 'bookmarks';
 type Mode = 'exam' | 'cheat-sheet' | 'descriptive';
@@ -14,26 +14,23 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab | null>(null);
   const [activeMode, setActiveMode] = useState<Mode>('descriptive');
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [bookmarkedChats, setBookmarkedChats] = useState<string[]>([]);
 
+  const { 
+    messages, 
+    isLoading, 
+    currentChatId, 
+    sendMessage, 
+    startNewChat 
+  } = useChat();
+
   const handleNewChat = () => {
-    setSelectedChatId(null);
+    startNewChat();
     setActiveTab(null);
-    toast({
-      title: "New Chat",
-      description: "Started a new conversation",
-    });
   };
 
   const handleSendMessage = (message: string) => {
-    if (!selectedChatId) {
-      setSelectedChatId('new');
-    }
-    toast({
-      title: "Message sent",
-      description: "Your doubt has been submitted (UI only)",
-    });
+    sendMessage(message, activeMode);
   };
 
   const handleTabChange = (tab: Tab) => {
@@ -61,7 +58,6 @@ const Index = () => {
   };
 
   const handleSelectChatFromBookmarks = (chatId: string) => {
-    setSelectedChatId(chatId);
     setActiveTab(null);
   };
 
@@ -79,8 +75,8 @@ const Index = () => {
       <ChatSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        selectedChatId={selectedChatId}
-        onSelectChat={setSelectedChatId}
+        selectedChatId={currentChatId}
+        onSelectChat={() => {}}
         onNewChat={handleNewChat}
         onOpenBookmarks={handleOpenBookmarks}
         bookmarkedChats={bookmarkedChats}
@@ -99,7 +95,11 @@ const Index = () => {
             />
           ) : (
             <>
-              <ChatArea chatId={selectedChatId} />
+              <ChatArea 
+                chatId={currentChatId} 
+                messages={messages}
+                isLoading={isLoading}
+              />
               <InputBar onSendMessage={handleSendMessage} />
             </>
           )}
